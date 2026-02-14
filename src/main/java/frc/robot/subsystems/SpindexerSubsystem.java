@@ -27,9 +27,10 @@ public class SpindexerSubsystem extends SubsystemBase {
             spindexerMotor.set(0);
         }, this));
     }
-    public Command spinHopper(boolean spinOut) {
+    
+    public Command spinHopper() {
         return Commands.run(() -> {
-            spindexerMotor.set(SpindexerConstants.SPINDEXER_DUTY_CYCLE * (spinOut ? 1 : -1));
+            spindexerMotor.set(SpindexerConstants.SPINDEXER_DUTY_CYCLE);
         }, this);
     }
 }
