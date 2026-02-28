@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.photonvision.PhotonUtils;
 
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -33,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
@@ -95,6 +98,19 @@ public class RobotContainer {
         joystick.povUp().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kForward));
         joystick.povUp().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kReverse));
         
+        // Bind buttons for intake and shooter commands 
+        //joystick.R1().whileTrue(Commands.either(RobotCommands.intakeBalls().finallyDo(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeOut())), Commands.none(), Subsystems.intake()::isOut));
+        //joystick.R1().whileTrue(RobotCommands.intakeBalls()).whileFalse(RobotCommands.holdIntakeOut());
+        // joystick.square().onTrue(Commands.defer(()->{
+        //     if (Subsystems.intake().isOut()) {
+        //         return Subsystems.intake().setIn();
+        //     }
+        //     return Subsystems.intake().setOut(true);
+        // }, Set.of(Subsystems.intake())));
+        joystick.R1().whileTrue(Subsystems.intake().setOut(true));
+        joystick.L1().whileTrue(RobotCommands.fireShooter());
+
+        joystick.circle().onTrue(RobotCommands.alignToHub(joystick).onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate()));
 
         Subsystems.drivetrain().registerTelemetry(logger::telemeterize);
     }

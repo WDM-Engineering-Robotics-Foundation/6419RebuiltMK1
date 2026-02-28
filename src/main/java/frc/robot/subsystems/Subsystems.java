@@ -14,8 +14,15 @@ public class Subsystems {
 
     private static IntakeSubsystem intake;
 
+    private static VisionSubsystem vision;
+
     public static void init() {
         drivetrain = TunerConstants.createDrivetrain();
+        shooter = new ShooterSubsystem();
+        spindexer = new SpindexerSubsystem();
+        kicker = new KickerSubsystem();
+        intake = new IntakeSubsystem();
+        vision = new VisionSubsystem();
     }
 
     public static CommandSwerveDrivetrain drivetrain() {
@@ -40,6 +47,11 @@ public class Subsystems {
     public static IntakeSubsystem intake() {
         throwIfNull("Intake", intake);
         return intake;
+    }
+
+    public static VisionSubsystem vision() {
+        throwIfNull("Vision", vision);
+        return vision;
     }
 
     private static void throwIfNull(String name, Object obj) {
