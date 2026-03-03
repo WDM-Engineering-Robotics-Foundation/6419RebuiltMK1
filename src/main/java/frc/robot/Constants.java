@@ -56,6 +56,8 @@ public class Constants {
         public static final int INTAKE_POS_MOTOR_ID = 19;
         public static final int INTAKE_SPIN_MOTOR_ID = 20;
 
+        public static final int INTAKE_ABS_ENCODER_ID = 21;
+
         public static final boolean INTAKE_POS_REVERSED = false;
         public static final boolean INTAKE_SPIN_REVERSED = false;
 
@@ -99,6 +101,11 @@ public class Constants {
             Units.Meters.of(4.025)
         );
 
+        // public static final Translation2d SHOOTER_OFFSET = new Translation2d(
+        //     Units.Inches.of(9.0),
+        //     Units.Inches.of(5.0)
+        // );
+
         public static final double VELO_MULT = 0.1;
 
         public static final double VELO_MULT_DIST = 0.1;
@@ -109,7 +116,7 @@ public class Constants {
 
         public static final Distance HUB_HEIGHT = Units.Inches.of(72);
 
-        public static final double ANGLE_COS_CONST = 2 * (HUB_HEIGHT.minus(SHOOTER_HEIGHT).in(Units.Meters)) * Math.pow(Math.cos(SHOOTER_ANGLE.in(Units.Radians)),2);
+        public static final double ANGLE_COS_CONST = 2 * (HUB_HEIGHT.minus(SHOOTER_HEIGHT).in(Units.Meters)) * Math.pow(Math.cos(SHOOTER_ANGLE_RAD),2);
 
         
 

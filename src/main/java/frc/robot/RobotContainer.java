@@ -17,6 +17,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -68,6 +69,7 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         Subsystems.drivetrain().setDefaultCommand(
@@ -108,7 +110,10 @@ public class RobotContainer {
         //     return Subsystems.intake().setOut(true);
         // }, Set.of(Subsystems.intake())));
         joystick.R1().whileTrue(Subsystems.intake().setOut(true));
-        joystick.L1().whileTrue(RobotCommands.fireShooter());
+        joystick.L1().whileTrue(Commands.parallel(
+            RobotCommands.alignToHub(joystick),
+            RobotCommands.fireShooter()
+        ));
 
         joystick.circle().onTrue(RobotCommands.alignToHub(joystick).onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate()));
 

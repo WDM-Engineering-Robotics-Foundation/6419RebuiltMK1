@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.encoder.SplineEncoder;
+import com.revrobotics.encoder.config.DetachedEncoderConfig;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -35,6 +37,8 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private SparkClosedLoopController posController;
 
+    private SplineEncoder absEncoder;
+
     private boolean isOut = false;
 
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -49,14 +53,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     IntakeSubsystem() {
+        // absEncoder = new SplineEncoder(IntakeConstants.INTAKE_ABS_ENCODER_ID); {
+        //     DetachedEncoderConfig config = new DetachedEncoderConfig();
+        //     config.positionConversionFactor(1.0f);
+
+        //     absEncoder.configure(config,ResetMode.kResetSafeParameters);
+        // }
         posMotor = new SparkFlex(IntakeConstants.INTAKE_POS_MOTOR_ID, MotorType.kBrushless); {
             SparkFlexConfig config = new SparkFlexConfig();
         
             config.inverted(IntakeConstants.INTAKE_POS_REVERSED);
-            config.encoder.positionConversionFactor(IntakeConstants.POSITION_CONVERSION);
-            //config.encoder.inverted(true);
+        
             config.closedLoop.pid(IntakeConstants.POS_KP, IntakeConstants.POS_KI, IntakeConstants.POS_KD);
             config.closedLoop.outputRange(-1, 1);
+            //config.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, absEncoder);
             config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
             posMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -86,7 +96,7 @@ public class IntakeSubsystem extends SubsystemBase {
         atTargetPub.set(posController.isAtSetpoint());
         //posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT, ControlType.kPosition);
         posTarget.set(posController.getSetpoint());
-        posActual.set(posMotor.getEncoder().getPosition());
+        //posActual.set(absEncoder.getPosition());
         intakeRotOut.set(posMotor.getAppliedOutput());
         outPub.set(isOut);
     }

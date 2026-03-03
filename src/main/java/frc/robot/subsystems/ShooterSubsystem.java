@@ -82,7 +82,7 @@ public class ShooterSubsystem extends SubsystemBase {
             // double velo = (FieldCalculations.getTargetPose().getDistance(robotLoc)-ShooterConstants.BASE_DIST_METERS)*ShooterConstants.VELO_DIST_MULT + ShooterConstants.BASE_VELOCITY;
             // velo += Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond*Constants.AimingConstants.VELO_MULT_DIST;
             // velo = MathUtil.clamp(velo, 0, ShooterConstants.VELO_MAX);
-            double velo = ShooterConstants.BASE_VELOCITY;
+            double velo = FieldCalculations.getBaseTargetVelo();
             shooterLeft.setControl(new VelocityVoltage(targetVelo = velo).withFeedForward(ShooterConstants.VELO_FF));
             shooterRight.setControl(new Follower(ShooterConstants.LEFT_SHOOTER_MOTOR_ID, MotorAlignmentValue.Opposed));
         }, this);
