@@ -1,0 +1,82 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.680499286733238,
+        "y": 0.7809272467902997
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.213752626578179,
+        "y": 0.7520822637048408
+      },
+      "isLocked": false,
+      "linkedName": "TrenchShoot"
+    },
+    {
+      "anchor": {
+        "x": 7.428987161198288,
+        "y": 0.7809272467902997
+      },
+      "prevControl": {
+        "x": 7.117022804180841,
+        "y": 0.4904169376791151
+      },
+      "nextControl": {
+        "x": 7.972886600402185,
+        "y": 1.2874222698729774
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.767325301204821,
+        "y": 3.4776867469879518
+      },
+      "prevControl": {
+        "x": 7.481341355092512,
+        "y": 2.027649951813027
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RightSideIntake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4555497106785916,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 1.111553784860566,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 89.65275710291422
+  },
+  "reversed": false,
+  "folder": "Right Side",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 63.52856929436249
+  },
+  "useDefaultConstraints": true
+}

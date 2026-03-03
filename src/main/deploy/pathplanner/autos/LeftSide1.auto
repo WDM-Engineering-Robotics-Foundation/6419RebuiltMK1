@@ -1,0 +1,109 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideStart1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeOutpost"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideOutpostShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "BumpForwards"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideBumpIntakeMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideMiddleToBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "BumpBackwards"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideBumpShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideEndToBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "BumpForwards"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideBumpIntakeMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideMiddleToBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "BumpBackwards"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideBumpShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Left Side",
+  "choreoAuto": false
+}

@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.653156626506024,
+        "y": 0.6255542168674697
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.601657687010495,
+        "y": 0.7715415404675788
+      },
+      "isLocked": false,
+      "linkedName": "RightSideEndIntakeShoot"
+    },
+    {
+      "anchor": {
+        "x": 3.5164457831325304,
+        "y": 0.7020481927710842
+      },
+      "prevControl": {
+        "x": 2.238522553960764,
+        "y": 0.688040325581366
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RightSideStart"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 70.84264025257212
+  },
+  "reversed": false,
+  "folder": "Right Side",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 59.66344493891042
+  },
+  "useDefaultConstraints": true
+}

@@ -1,0 +1,79 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideStart2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideMiddleToBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "BumpBackwards"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideBumpShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideEndToStart2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideStart2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideMiddleToBump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "BumpBackwards"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftSideBumpShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Left Side",
+  "choreoAuto": false
+}

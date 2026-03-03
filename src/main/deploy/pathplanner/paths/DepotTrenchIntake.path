@@ -1,0 +1,93 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.4894698795180723,
+        "y": 0.7020481927710842
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.4894698795180723,
+        "y": 0.702048192771084
+      },
+      "isLocked": false,
+      "linkedName": "Depot"
+    },
+    {
+      "anchor": {
+        "x": 7.131398002853067,
+        "y": 0.4962767475035662
+      },
+      "prevControl": {
+        "x": 6.131398002853067,
+        "y": 0.4962767475035662
+      },
+      "nextControl": {
+        "x": 8.131398002853068,
+        "y": 0.4962767475035662
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.767325301204821,
+        "y": 3.4776867469879518
+      },
+      "prevControl": {
+        "x": 7.6398003368681575,
+        "y": 2.112034666483337
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RightSideIntake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5927505330490384,
+      "rotationDegrees": 90.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.63,
+        "y": 4.025
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.1512491559756912,
+      "maxWaypointRelativePos": 0.45374746792707976,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Run Intake",
+      "waypointRelativePos": 1.388251181634026,
+      "endWaypointRelativePos": 2.0,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 89.65275710291422
+  },
+  "reversed": false,
+  "folder": "Right Side",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -0.5672664098579183
+  },
+  "useDefaultConstraints": true
+}

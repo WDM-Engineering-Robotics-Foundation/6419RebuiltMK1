@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightSideStart2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightSideIntakeShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightSideReturnIntakeShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightSideStart2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightSideIntakeShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Right Side",
+  "choreoAuto": false
+}

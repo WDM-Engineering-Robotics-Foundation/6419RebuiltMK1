@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightBumpShootDepot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DepotTrenchIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeTrenchReturn"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TrenchReturnShootIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeTrenchReturn"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Right Side",
+  "choreoAuto": false
+}
