@@ -5,27 +5,39 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Shoot Preload"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "MiddleShoot1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleReturn"
+            "pathName": "Test-Right-Start"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Empty Hopper"
+            "name": "Run Shooter 3sec"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test-Right-HP"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Test-Right-End"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run Shooter"
           }
         }
       ]

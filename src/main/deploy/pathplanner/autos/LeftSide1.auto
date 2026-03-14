@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Empty Hopper"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LeftSideStart1"

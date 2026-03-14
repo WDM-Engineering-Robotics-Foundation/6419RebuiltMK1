@@ -43,7 +43,12 @@ public class FieldCalculations {
         
 
         // https://www.desmos.com/calculator/4lntym3xnv
-        targetVelo = Math.sqrt((dist.getSquaredNorm() * 9.806)/(dist.getNorm()*Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD) - AimingConstants.ANGLE_COS_CONST));
+        // targetVelo = Math.sqrt((dist.getSquaredNorm() * 9.806)/(dist.getNorm()*Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD) - AimingConstants.ANGLE_COS_CONST));
+        // targetVelo *= AimingConstants.VELO_MULT_DIST;
+
+        // quadratic approx of velos plotted at distances: 2.10, 2.53, 3.70, 5.28
+        targetVelo = AimingConstants.VELO_DIST_A*dist.getSquaredNorm() + AimingConstants.VELO_DIST_B*dist.getNorm() + AimingConstants.VELO_DIST_C;
+
         travelTime = (targetVelo * (Math.sin(AimingConstants.SHOOTER_ANGLE_RAD)) + Math.sqrt(Math.pow(targetVelo * (Math.sin(AimingConstants.SHOOTER_ANGLE_RAD)),2) + 19.612 * (-heightDiff)))/(9.806);
         
         double deltaX = speeds.vxMetersPerSecond;

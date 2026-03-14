@@ -3,45 +3,34 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6102573203194313,
-        "y": 7.395004436557232
+        "x": 3.5848363095238094,
+        "y": 1.966480654761905
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.000674356699201,
-        "y": 7.370860692102928
+        "x": 2.8801041666666665,
+        "y": 1.3857291666666671
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.314032738095238,
-        "y": 5.979538690476191
+        "x": 2.3711309523809523,
+        "y": 2.325372023809524
       },
       "prevControl": {
-        "x": 1.0484515490979,
-        "y": 6.132449072020113
+        "x": 2.7430729166666667,
+        "y": 1.790297619047619
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DepotFront"
+      "linkedName": "RightWynonaTransition1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [
-    {
-      "fieldPosition": {
-        "x": 4.62,
-        "y": 4.04
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 1.0,
-      "name": "Point Towards Zone"
-    }
-  ],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
@@ -53,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.6661999701831073
+    "rotation": 34.42647658143909
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Wynona",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -64.53665493812841
+    "rotation": 178.79395122077995
   },
   "useDefaultConstraints": true
 }

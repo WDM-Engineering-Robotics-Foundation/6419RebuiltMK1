@@ -13,6 +13,7 @@ import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -62,9 +63,27 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        
         Subsystems.init();
+        NamedCommands.registerCommand("Run Shooter", RobotCommands.fireShooter());
+        //NamedCommands.registerCommand("Stop Shooter", RobotCommands.stopShooter());
+        NamedCommands.registerCommand("Run Shooter 3sec", RobotCommands.fireShooter().withTimeout(3));
+        NamedCommands.registerCommand("Run Intake 5sec", RobotCommands.intakeBalls().withTimeout(5));
+        NamedCommands.registerCommand("Intake Depot", Subsystems.intake().setDepot().asProxy());
+        
+        NamedCommands.registerCommand("BumpForwards", Subsystems.drivetrain().applyRequest(()->drive.withVelocityX(MaxSpeed*0.5)));
+        NamedCommands.registerCommand("BumpBackwards", Subsystems.drivetrain().applyRequest(()->drive.withVelocityX(-MaxSpeed*0.5)));
+        NamedCommands.registerCommand("Run Intake", RobotCommands.intakeBalls());
+        final boolean showTestAutos = false;
         Subsystems.drivetrain().configurePathPlanner();
-        SmartDashboard.putData(autoChooser = AutoBuilder.buildAutoChooser());
+        SmartDashboard.putData("Auto Chooser",autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+            opt -> opt.filter((auto)->(auto.getName().startsWith("Test-")&&showTestAutos)||auto.getName().startsWith("Comp-"))
+        ));
+        //autoChooser.addOption("depotNoPath", Autos.depotTest());
+        
+        // Setup and register commands for PathPlanner
+        
+        
         configureBindings();
     }
 
@@ -88,17 +107,18 @@ public class RobotContainer {
             Subsystems.drivetrain().applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        // joystick.cross().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
+        joystick.povDown().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
         // joystick.circle().whileTrue(Subsystems.drivetrain().applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.povDown().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kForward));
-        joystick.povDown().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kReverse));
-        joystick.povUp().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kForward));
-        joystick.povUp().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kReverse));
+
+        // joystick.povDown().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kForward));
+        // joystick.povDown().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kReverse));
+        // joystick.povUp().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kForward));
+        // joystick.povUp().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kReverse));
         
         // Bind buttons for intake and shooter commands 
         //joystick.R1().whileTrue(Commands.either(RobotCommands.intakeBalls().finallyDo(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeOut())), Commands.none(), Subsystems.intake()::isOut));
@@ -109,11 +129,32 @@ public class RobotContainer {
         //     }
         //     return Subsystems.intake().setOut(true);
         // }, Set.of(Subsystems.intake())));
+
         joystick.R1().whileTrue(Subsystems.intake().setOut(true));
+        joystick.R2().whileTrue(Commands.sequence(
+                Commands.deadline(
+                    Commands.waitSeconds(0.1).andThen(Commands.waitUntil(Subsystems.intake()::atPosition)),
+                    RobotCommands.holdIntakeFeed()
+                ),
+                Commands.waitSeconds(0.1),
+                Commands.waitUntil(Subsystems.intake()::atPosition)
+            ).repeatedly().handleInterrupt(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeIn()))
+        );
+
         joystick.L1().whileTrue(Commands.parallel(
             RobotCommands.alignToHub(joystick),
             RobotCommands.fireShooter()
         ));
+        joystick.L2().whileTrue(RobotCommands.fireShooterSetSpeed(45));
+
+        joystick.PS().onTrue(Commands.runOnce(()->Subsystems.drivetrain().seedFieldCentric()));
+
+        // joystick.R1().whileTrue(Subsystems.shooter().sysIdDynamic(Direction.kReverse));
+        // joystick.L1().whileTrue(Subsystems.shooter().sysIdQuasistatic(Direction.kReverse));
+
+        // joystick.R2().whileTrue(Subsystems.shooter().sysIdDynamic(Direction.kForward));
+        // joystick.L2().whileTrue(Subsystems.shooter().sysIdQuasistatic(Direction.kForward));
+
 
         joystick.circle().onTrue(RobotCommands.alignToHub(joystick).onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate()));
 

@@ -8,6 +8,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+
 import static frc.robot.Constants.KickerConstants;
 
 public class KickerSubsystem extends SubsystemBase {
@@ -29,7 +31,7 @@ public class KickerSubsystem extends SubsystemBase {
     public Command runKicker() {
         return Commands.run(()->{
             kickerMotor.setControl(new DutyCycleOut(KickerConstants.KICKER_DUTY_CYCLE));
-        },this);
+        },this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
     }
 
 

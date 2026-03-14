@@ -8,32 +8,56 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotCommands {
     
     public static Command fireShooter() {
-        return Commands.parallel(
-            Subsystems.shooter().spinShooter(),
+        return Commands.deadline(
             Commands.waitUntil(Subsystems.shooter()::atSpeed).andThen(
                 Commands.parallel(
                     Subsystems.kicker().runKicker(),
                     Subsystems.spindexer().spinHopper()
                 )
-            )
-        );
+            ),
+            Subsystems.shooter().spinShooter()
+        ).withInterruptBehavior(InterruptionBehavior.kCancelSelf).asProxy();
     }
 
+    public static Command fireShooterSetSpeed(double speed) {
+        return Commands.deadline(
+            Commands.waitUntil(Subsystems.shooter()::atSpeed).andThen(
+                Commands.parallel(
+                    Subsystems.kicker().runKicker(),
+                    Subsystems.spindexer().spinHopper()
+                )
+            ),
+            Subsystems.shooter().spinShooterSetSpeed(speed)
+        ).withInterruptBehavior(InterruptionBehavior.kCancelSelf).asProxy();
+    }
+
+
     public static Command intakeBalls() {
-        return Subsystems.intake().setOut(true);
+        return Subsystems.intake().setOut(true).asProxy();
+    }
+
+    public static Command holdIntakeIn() {
+        return Subsystems.intake().setIn().asProxy();
     }
 
     public static Command holdIntakeOut() {
-        return Subsystems.intake().setOut(false);
+        return Subsystems.intake().setOut(false).asProxy();
+    }
+
+    public static Command holdIntakeFeed() {
+        return Subsystems.intake().setFeed().asProxy();
     }
     private static final SwerveRequest.FieldCentricFacingAngle alignRequest = new SwerveRequest.FieldCentricFacingAngle()
         .withHeadingPID(8,0,0)
@@ -45,6 +69,10 @@ public class RobotCommands {
             Translation2d robotDiff = FieldCalculations.getTargetPose().minus(robotLoc);
 
             Rotation2d target = robotDiff.getAngle();
+
+            if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+                target = target.plus(Rotation2d.k180deg);
+            }
 
             
         

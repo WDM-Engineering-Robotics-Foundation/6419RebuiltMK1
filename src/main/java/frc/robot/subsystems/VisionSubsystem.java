@@ -34,6 +34,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (latest.isEmpty()) return;
         var optionalEstimate = poseEstimator.estimateCoprocMultiTagPose(latest.get(latest.size()-1));
         if (optionalEstimate.isPresent()) poseEstimate = optionalEstimate.get();
+        
         else {
             optionalEstimate = poseEstimator.estimateLowestAmbiguityPose(latest.get(latest.size()-1));
             if (optionalEstimate.isPresent()) poseEstimate = optionalEstimate.get();

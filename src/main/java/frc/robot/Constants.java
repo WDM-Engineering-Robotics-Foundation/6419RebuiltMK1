@@ -27,11 +27,13 @@ public class Constants {
 
         public static final double VELO_MAX = 75;
 
-        public static final double VELO_DIST_MULT = 10;
-
         public static final double BASE_DIST_METERS = 2.54;
 
-        public static final Slot0Configs SHOOTER_PID = new Slot0Configs().withKP(0.75);
+        public static final Slot0Configs SHOOTER_PID = new Slot0Configs()
+            .withKP(0.12205)
+            .withKA(0.0073638)
+            .withKV(0.11745)
+            .withKS(0.20241);
     }
 
     public static final class SpindexerConstants {
@@ -61,15 +63,23 @@ public class Constants {
         public static final boolean INTAKE_POS_REVERSED = false;
         public static final boolean INTAKE_SPIN_REVERSED = false;
 
-        public static final double INTAKE_POS_HOME = 0.05;
+        public static final double INTAKE_POS_HOME = 0.18;
+
+        public static final double INTAKE_POS_INSIDE = 0;
+
+        public static final double INTAKE_POS_FEED = 0.04;
         // 136
-        public static final double INTAKE_POS_OUT = 0.35;
+        public static final double INTAKE_POS_OUT = 0.33;
+
+        public static final double INTAKE_POS_DEPOT = 0.28;
 
         public static final double POSITION_CONVERSION = 1.0/20.0 * 24.0/56.0;
 
-        public static final double INTAKE_DUTY_CYCLE = 0.5;
+        public static final double INTAKE_DUTY_CYCLE = 0.6;
 
-        public static final double POS_KP = 1.4;
+        public static final double POS_TOLERANCE = 0.02;
+
+        public static final double POS_KP = 1.8;
         public static final double POS_KI = 0.0;
         public static final double POS_KD = 0.0;
     }
@@ -108,7 +118,9 @@ public class Constants {
 
         public static final double VELO_MULT = 0.1;
 
-        public static final double VELO_MULT_DIST = 0.1;
+        public static final double VELO_DIST_A = 0.402129;
+        public static final double VELO_DIST_B = 2.51619;
+        public static final double VELO_DIST_C = 34.85438;
 
         public static final double SHOOTER_ANGLE_RAD = Units.Degrees.of(54).in(Units.Radians);
 
@@ -116,7 +128,7 @@ public class Constants {
 
         public static final Distance HUB_HEIGHT = Units.Inches.of(72);
 
-        public static final double ANGLE_COS_CONST = 2 * (HUB_HEIGHT.minus(SHOOTER_HEIGHT).in(Units.Meters)) * Math.pow(Math.cos(SHOOTER_ANGLE_RAD),2);
+        public static final double ANGLE_COS_CONST = 2 * HUB_HEIGHT.minus(SHOOTER_HEIGHT).in(Units.Meters) * Math.cos(SHOOTER_ANGLE_RAD)*Math.cos(SHOOTER_ANGLE_RAD);
 
         
 

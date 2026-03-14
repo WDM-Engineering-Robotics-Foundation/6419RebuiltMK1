@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.controls.CoastOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -22,7 +24,11 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.FieldCalculations;
 
 import static frc.robot.Constants.ShooterConstants;
@@ -43,14 +49,32 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private double targetVelo = 0.0;
 
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            Units.Volts.of(4),
+            Units.Seconds.of(5),
+            state -> SignalLogger.writeString("SysIdShooterState", state.toString())
+        ), 
+        new SysIdRoutine.Mechanism(
+            (volts)->{
+                shooterLeft.setControl(new VoltageOut(volts));
+                shooterRight.setControl(new Follower(ShooterConstants.LEFT_SHOOTER_MOTOR_ID, MotorAlignmentValue.Opposed));
+            }, 
+            null, 
+            this
+        )
+    );
+
     ShooterSubsystem() {
         shooterLeft = new TalonFX(ShooterConstants.LEFT_SHOOTER_MOTOR_ID); {
             MotorOutputConfigs outConfig = new MotorOutputConfigs();
-
+            
+            
             outConfig.Inverted = ShooterConstants.LEFT_SHOOTER_REVERSED ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
             ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig();
             closedLoopConfig.allowedClosedLoopError(ShooterConstants.VELO_TOLERANCE, ClosedLoopSlot.kSlot0);
-    
+            
 
             shooterLeft.getConfigurator().apply(outConfig);
             shooterLeft.getConfigurator().apply(ShooterConstants.SHOOTER_PID);
@@ -68,7 +92,7 @@ public class ShooterSubsystem extends SubsystemBase {
         setDefaultCommand(Commands.run(() -> {
             targetVelo = 0;
             shooterLeft.setControl(new CoastOut());
-            shooterRight.setControl(new Follower(ShooterConstants.LEFT_SHOOTER_MOTOR_ID, MotorAlignmentValue.Opposed));
+            shooterRight.setControl(new CoastOut());
         },this));
     }
 
@@ -83,9 +107,29 @@ public class ShooterSubsystem extends SubsystemBase {
             // velo += Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond*Constants.AimingConstants.VELO_MULT_DIST;
             // velo = MathUtil.clamp(velo, 0, ShooterConstants.VELO_MAX);
             double velo = FieldCalculations.getBaseTargetVelo();
-            shooterLeft.setControl(new VelocityVoltage(targetVelo = velo).withFeedForward(ShooterConstants.VELO_FF));
+            velo = MathUtil.clamp(velo, 0, ShooterConstants.VELO_MAX);
+            //.withFeedForward(ShooterConstants.VELO_FF)
+            shooterLeft.setControl(new VelocityVoltage(targetVelo = velo));
             shooterRight.setControl(new Follower(ShooterConstants.LEFT_SHOOTER_MOTOR_ID, MotorAlignmentValue.Opposed));
-        }, this);
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command spinShooterSetSpeed(double targetVelo) {
+        return Commands.run(()->{
+            
+            double velo = MathUtil.clamp(targetVelo, 0, ShooterConstants.VELO_MAX);
+            //.withFeedForward(ShooterConstants.VELO_FF)
+            shooterLeft.setControl(new VelocityVoltage(this.targetVelo = velo));
+            shooterRight.setControl(new Follower(ShooterConstants.LEFT_SHOOTER_MOTOR_ID, MotorAlignmentValue.Opposed));
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command sysIdDynamic(Direction dir) {
+        return sysIdRoutine.dynamic(dir);
+    }
+
+    public Command sysIdQuasistatic(Direction dir) {
+        return sysIdRoutine.quasistatic(dir);
     }
 
     @Override

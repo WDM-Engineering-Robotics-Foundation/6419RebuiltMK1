@@ -1,10 +1,16 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
+import com.revrobotics.encoder.config.DetachedEncoderAccessor;
 import com.revrobotics.encoder.config.DetachedEncoderConfig;
+import com.revrobotics.jni.DetachedEncoderJNI;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -12,6 +18,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.BooleanPublisher;
@@ -26,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.KickerConstants;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 
 import static frc.robot.Constants.IntakeConstants;
@@ -33,7 +41,9 @@ import static frc.robot.Constants.IntakeConstants;
 import java.io.OutputStream;
 
 public class IntakeSubsystem extends SubsystemBase {
-    private SparkFlex posMotor, spinMotor;
+    private SparkFlex posMotor;
+
+    private TalonFX spinMotor;
 
     private SparkClosedLoopController posController;
 
@@ -53,33 +63,36 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     IntakeSubsystem() {
-        // absEncoder = new SplineEncoder(IntakeConstants.INTAKE_ABS_ENCODER_ID); {
-        //     DetachedEncoderConfig config = new DetachedEncoderConfig();
-        //     config.positionConversionFactor(1.0f);
+       
+        absEncoder = new SplineEncoder(IntakeConstants.INTAKE_ABS_ENCODER_ID); 
 
-        //     absEncoder.configure(config,ResetMode.kResetSafeParameters);
-        // }
         posMotor = new SparkFlex(IntakeConstants.INTAKE_POS_MOTOR_ID, MotorType.kBrushless); {
             SparkFlexConfig config = new SparkFlexConfig();
         
             config.inverted(IntakeConstants.INTAKE_POS_REVERSED);
+            config.idleMode(IdleMode.kBrake);
         
             config.closedLoop.pid(IntakeConstants.POS_KP, IntakeConstants.POS_KI, IntakeConstants.POS_KD);
             config.closedLoop.outputRange(-1, 1);
-            //config.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, absEncoder);
-            config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+            config.closedLoop.positionWrappingInputRange(0, 1.0);
+            config.closedLoop.positionWrappingEnabled(true);
+            config.closedLoop.feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder, absEncoder);
+            //config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+            config.encoder.positionConversionFactor(IntakeConstants.POSITION_CONVERSION);
+            
 
             posMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
             posController = posMotor.getClosedLoopController();
 
         }
 
-        spinMotor = new SparkFlex(IntakeConstants.INTAKE_SPIN_MOTOR_ID, MotorType.kBrushless); {
-            SparkFlexConfig config = new SparkFlexConfig();
+        spinMotor = new TalonFX(IntakeConstants.INTAKE_SPIN_MOTOR_ID); {
+            MotorOutputConfigs outConfig = new MotorOutputConfigs();
 
-            config.inverted(IntakeConstants.INTAKE_SPIN_REVERSED);
+            outConfig.Inverted = IntakeConstants.INTAKE_SPIN_REVERSED ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
-            spinMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+            spinMotor.getConfigurator().apply(outConfig);
+            
         }
         setDefaultCommand(Commands.run(()->{
             isOut = false;
@@ -93,24 +106,39 @@ public class IntakeSubsystem extends SubsystemBase {
     public void periodic() {
         dutyCyclePub.set(spinMotor.get());
         //136
-        atTargetPub.set(posController.isAtSetpoint());
+        atTargetPub.set(atPosition());
         //posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT, ControlType.kPosition);
         posTarget.set(posController.getSetpoint());
-        //posActual.set(absEncoder.getPosition());
+        
+        posActual.set(absEncoder.getAngle());
+        //posActual.set(posMotor.getEncoder().getPosition());
         intakeRotOut.set(posMotor.getAppliedOutput());
         outPub.set(isOut);
     }
 
     public boolean atPosition() {
-        return posController.isAtSetpoint();
+        return Math.abs(posController.getSetpoint()-absEncoder.getAngle()) <= IntakeConstants.POS_TOLERANCE;
     }
 
     public Command setOut(boolean intake) {
         return Commands.run(()->{
             isOut = true;
-            System.out.println("Setting setpoint: " + IntakeConstants.INTAKE_POS_OUT);
             posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT, ControlType.kPosition, ClosedLoopSlot.kSlot0);
             spinMotor.set((intake) ? IntakeConstants.INTAKE_DUTY_CYCLE : 0.0); // && atPosition()
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command setFeed() {
+        return Commands.run(()->{
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_FEED, ControlType.kPosition);
+            spinMotor.set(0);
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command setDepot() {
+        return Commands.run(()->{
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_DEPOT, ControlType.kPosition);
+            spinMotor.set(IntakeConstants.INTAKE_DUTY_CYCLE);
         }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
     }
 
@@ -119,7 +147,18 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public Command setIn() {
-        return getDefaultCommand();
+        return Commands.run(()->{
+            isOut = false;
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_HOME, ControlType.kPosition);
+            spinMotor.set(0.0);
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command setZero() {
+        return Commands.run(()->{
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_INSIDE, ControlType.kPosition);
+            spinMotor.set(0.0);
+        }, this);
     }
 
 
