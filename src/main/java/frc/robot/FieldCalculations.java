@@ -78,4 +78,34 @@ public class FieldCalculations {
     public static double getBaseTargetVelo() {
         return targetVelo;
     }
+
+    public static double flywheelToBallSpeed(double flywheelSpeed) {
+        double rpsInverse = (-2.51619 + Math.sqrt(1.608516 * flywheelSpeed - 49.732616))/(0.804258);
+        return Math.sqrt((rpsInverse * rpsInverse * 9.806)/(rpsInverse * Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD) - 2 * (AimingConstants.HUB_HEIGHT.in(Units.Meters) - AimingConstants.SHOOTER_HEIGHT.in(Units.Meters)) * (Math.cos(AimingConstants.SHOOTER_ANGLE_RAD) * Math.cos(AimingConstants.SHOOTER_ANGLE_RAD))));
+    }
+
+    public static double ballSpeedToFlywheel(double ballSpeed) {
+        double totalSpeed = Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond + ballSpeed;
+        double mpsInverse = (totalSpeed * totalSpeed * Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD) + totalSpeed * Math.sqrt(totalSpeed * totalSpeed * Math.pow(Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD), 2) - 78.448 * (AimingConstants.HUB_HEIGHT.in(Units.Meters) - AimingConstants.SHOOTER_HEIGHT.in(Units.Meters)) * Math.pow(Math.cos(AimingConstants.SHOOTER_ANGLE_RAD), 2)))/(19.612);
+        return AimingConstants.VELO_DIST_A * (mpsInverse * mpsInverse) + AimingConstants.VELO_DIST_B * mpsInverse + AimingConstants.VELO_DIST_C;
+    }
+
+    public static Translation2d getAbsoluteVelocity() {
+        Translation2d relativeVelo = new Translation2d(Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond, Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond);
+        return relativeVelo.rotateBy(Subsystems.drivetrain().getRotation3d().toRotation2d());
+    }
+
+    public static double ballSpeedVelocityY(double ballSpeed) {
+        return ballSpeed * Math.cos(AimingConstants.SHOOTER_ANGLE_RAD);
+    }
+
+    public static double ballSpeedVelocityX(double ballSpeed) {
+        return ballSpeed * Math.sin(AimingConstants.SHOOTER_ANGLE_RAD);
+    }
+
+    public static Rotation2d getAngleOffsetDegrees() {
+        return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)))) 
+        * (180 / Math.PI) - Subsystems.drivetrain().getRotation3d().toRotation2d().getDegrees());
+    }
 }
+

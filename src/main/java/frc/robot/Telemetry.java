@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -53,6 +54,8 @@ public class Telemetry {
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
 
     private final StructPublisher<Translation2d> targetLocation = driveStateTable.getStructTopic("Hub Translation", Translation2d.struct).publish();
+    private final StructPublisher<Translation2d> absoluteVelocity = driveStateTable.getStructTopic("Absolute Velocity", Translation2d.struct).publish();
+    private final DoublePublisher angleOffset = driveStateTable.getDoubleTopic("Angle Offset").publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
@@ -99,6 +102,8 @@ public class Telemetry {
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
         targetLocation.set(FieldCalculations.getTargetPose());
+        absoluteVelocity.set(FieldCalculations.getAbsoluteVelocity());
+        angleOffset.set(FieldCalculations.getAngleOffsetDegrees());
 
         /* Also write to log file */
         SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);

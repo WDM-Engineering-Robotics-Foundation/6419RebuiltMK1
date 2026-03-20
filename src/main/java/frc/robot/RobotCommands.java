@@ -72,6 +72,7 @@ public class RobotCommands {
 
             if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
                 target = target.plus(Rotation2d.k180deg);
+                target = FieldCalculations.getAngleOffsetDegrees();
             }
 
             
