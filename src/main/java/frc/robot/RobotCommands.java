@@ -75,12 +75,12 @@ public class RobotCommands {
                 target = FieldCalculations.getAngleOffsetDegrees();
             }
 
-            
+            target = target.plus(FieldCalculations.getAngleOffsetDegrees().times(Constants.ShooterConstants.OFFSET_MULT_SIDE));
         
             return alignRequest
                     .withVelocityX(-driveController.getLeftY() * 5.12) // Drive forward with negative Y (forward)
                     .withVelocityY(-driveController.getLeftX() * 5.12) // Drive left with negative X (left)
-                    .withTargetDirection(target.minus(new Rotation2d(Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond*Constants.AimingConstants.VELO_MULT)));
+                    .withTargetDirection(target);
                     
         });
     }

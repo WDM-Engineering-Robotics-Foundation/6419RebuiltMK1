@@ -33,6 +33,8 @@ public class Constants {
 
         public static final double OFFSET_MULT_BKWD = 1.75;
 
+        public static final double OFFSET_MULT_SIDE = 10;
+
         public static final Slot0Configs SHOOTER_PID = new Slot0Configs()
             .withKP(0.12205)
             .withKA(0.0073638)
