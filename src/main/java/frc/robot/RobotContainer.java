@@ -7,6 +7,7 @@ package frc.robot;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.photonvision.PhotonUtils;
 
@@ -17,6 +18,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -24,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -34,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
@@ -59,19 +63,32 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
+        
         Subsystems.init();
-        Subsystems.drivetrain().configurePathPlanner();
-        SmartDashboard.putData(autoChooser = AutoBuilder.buildAutoChooser());
-
-        // Setup and register command for PathPlanner
-        NamedCommands.registerCommand("Empty Hopper", RobotCommands.fireShooter().withTimeout(3));
-        NamedCommands.registerCommand("Run Intake", RobotCommands.intakeBalls());
         NamedCommands.registerCommand("Run Shooter", RobotCommands.fireShooter());
-
+        //NamedCommands.registerCommand("Stop Shooter", RobotCommands.stopShooter());
+        NamedCommands.registerCommand("Run Shooter 3sec", RobotCommands.fireShooter().withTimeout(3));
+        NamedCommands.registerCommand("Run Intake 5sec", RobotCommands.intakeBalls().withTimeout(5));
+        NamedCommands.registerCommand("Intake Depot", Subsystems.intake().setDepot().asProxy());
+        
+        NamedCommands.registerCommand("BumpForwards", Subsystems.drivetrain().applyRequest(()->drive.withVelocityX(MaxSpeed*0.5)));
+        NamedCommands.registerCommand("BumpBackwards", Subsystems.drivetrain().applyRequest(()->drive.withVelocityX(-MaxSpeed*0.5)));
+        NamedCommands.registerCommand("Run Intake", RobotCommands.intakeBalls());
+        final boolean showTestAutos = false;
+        Subsystems.drivetrain().configurePathPlanner();
+        SmartDashboard.putData("Auto Chooser",autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+            opt -> opt.filter((auto)->(auto.getName().startsWith("Test-")&&showTestAutos)||auto.getName().startsWith("Comp-"))
+        ));
+        //autoChooser.addOption("depotNoPath", Autos.depotTest());
+        
+        // Setup and register commands for PathPlanner
+        
+        
         configureBindings();
     }
 
     private void configureBindings() {
+        
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         Subsystems.drivetrain().setDefaultCommand(
@@ -90,18 +107,56 @@ public class RobotContainer {
             Subsystems.drivetrain().applyRequest(() -> idle).ignoringDisable(true)
         );
 
-        // joystick.cross().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
+        joystick.povDown().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
         // joystick.circle().whileTrue(Subsystems.drivetrain().applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
-        joystick.povDown().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kForward));
-        joystick.povDown().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kReverse));
-        joystick.povUp().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kForward));
-        joystick.povUp().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kReverse));
+
+        // joystick.povDown().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kForward));
+        // joystick.povDown().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdDynamic(Direction.kReverse));
+        // joystick.povUp().and(joystick.triangle()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kForward));
+        // joystick.povUp().and(joystick.square()).whileTrue(Subsystems.drivetrain().sysIdQuasistatic(Direction.kReverse));
         
+        // Bind buttons for intake and shooter commands 
+        //joystick.R1().whileTrue(Commands.either(RobotCommands.intakeBalls().finallyDo(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeOut())), Commands.none(), Subsystems.intake()::isOut));
+        //joystick.R1().whileTrue(RobotCommands.intakeBalls()).whileFalse(RobotCommands.holdIntakeOut());
+        // joystick.square().onTrue(Commands.defer(()->{
+        //     if (Subsystems.intake().isOut()) {
+        //         return Subsystems.intake().setIn();
+        //     }
+        //     return Subsystems.intake().setOut(true);
+        // }, Set.of(Subsystems.intake())));
+
+        joystick.R1().whileTrue(Subsystems.intake().setOut(true));
+        joystick.R2().whileTrue(Commands.sequence(
+                Commands.deadline(
+                    Commands.waitSeconds(0.1).andThen(Commands.waitUntil(Subsystems.intake()::atPosition)),
+                    RobotCommands.holdIntakeFeed()
+                ),
+                Commands.waitSeconds(0.1),
+                Commands.waitUntil(Subsystems.intake()::atPosition)
+            ).repeatedly().handleInterrupt(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeIn()))
+        );
+
+        joystick.L1().whileTrue(Commands.parallel(
+            RobotCommands.alignToHub(joystick),
+            RobotCommands.fireShooter()
+        ));
+        joystick.L2().whileTrue(RobotCommands.fireShooterSetSpeed(45));
+
+        joystick.PS().onTrue(Commands.runOnce(()->Subsystems.drivetrain().seedFieldCentric()));
+
+        // joystick.R1().whileTrue(Subsystems.shooter().sysIdDynamic(Direction.kReverse));
+        // joystick.L1().whileTrue(Subsystems.shooter().sysIdQuasistatic(Direction.kReverse));
+
+        // joystick.R2().whileTrue(Subsystems.shooter().sysIdDynamic(Direction.kForward));
+        // joystick.L2().whileTrue(Subsystems.shooter().sysIdQuasistatic(Direction.kForward));
+
+
+        joystick.circle().onTrue(RobotCommands.alignToHub(joystick).onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate()));
 
         Subsystems.drivetrain().registerTelemetry(logger::telemeterize);
     }
@@ -110,5 +165,4 @@ public class RobotContainer {
         // Simple drive forward auton
        return autoChooser.getSelected();
     }
-
 }
