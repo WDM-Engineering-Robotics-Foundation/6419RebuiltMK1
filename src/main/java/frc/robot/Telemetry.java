@@ -5,6 +5,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -55,7 +56,7 @@ public class Telemetry {
 
     private final StructPublisher<Translation2d> targetLocation = driveStateTable.getStructTopic("Hub Translation", Translation2d.struct).publish();
     private final StructPublisher<Translation2d> absoluteVelocity = driveStateTable.getStructTopic("Absolute Velocity", Translation2d.struct).publish();
-    private final DoublePublisher angleOffset = driveStateTable.getDoubleTopic("Angle Offset").publish();
+    private final StructPublisher<Rotation2d> angleOffset = driveStateTable.getStructTopic("Angle Offset", Rotation2d.struct).publish();
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");

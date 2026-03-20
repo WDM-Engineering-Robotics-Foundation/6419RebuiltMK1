@@ -29,6 +29,10 @@ public class Constants {
 
         public static final double BASE_DIST_METERS = 2.54;
 
+        public static final double OFFSET_MULT_FWD = 1.3;
+
+        public static final double OFFSET_MULT_BKWD = 1.75;
+
         public static final Slot0Configs SHOOTER_PID = new Slot0Configs()
             .withKP(0.12205)
             .withKA(0.0073638)
