@@ -103,9 +103,9 @@ public class FieldCalculations {
         return ballSpeed * Math.sin(AimingConstants.SHOOTER_ANGLE_RAD);
     }
 
-    public static Rotation2d getAngleOffsetDegrees(Rotation2d target) {
+    public static Rotation2d getAngleOffsetDegrees() {
         return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)))) 
-        * (180 / Math.PI) - target.getDegrees());
+        * (180 / Math.PI) - Subsystems.drivetrain().getRotation3d().toRotation2d().getDegrees());
     }
 }
 
