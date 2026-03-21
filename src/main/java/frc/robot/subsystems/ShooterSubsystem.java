@@ -33,6 +33,8 @@ import frc.robot.FieldCalculations;
 
 import static frc.robot.Constants.ShooterConstants;
 
+import java.lang.reflect.Field;
+
 public class ShooterSubsystem extends SubsystemBase {
 
     private TalonFX shooterLeft, shooterRight;
@@ -108,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
             // velo = MathUtil.clamp(velo, 0, ShooterConstants.VELO_MAX);
             double robotVelo = Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond;
             robotVelo *= robotVelo > 0 ? ShooterConstants.OFFSET_MULT_FWD : ShooterConstants.OFFSET_MULT_BKWD;
-            double velo = FieldCalculations.ballSpeedToFlywheel(FieldCalculations.flywheelToBallSpeed(FieldCalculations.getBaseTargetVelo()) - robotVelo);
+            double velo = FieldCalculations.getOffsetVelocity() - FieldCalculations.ballSpeedToFlywheel(robotVelo);
             velo = MathUtil.clamp(velo, 0, ShooterConstants.VELO_MAX);
             //.withFeedForward(ShooterConstants.VELO_FF)
             shooterLeft.setControl(new VelocityVoltage(targetVelo = velo));

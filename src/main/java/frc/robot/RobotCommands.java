@@ -75,7 +75,7 @@ public class RobotCommands {
                 target = FieldCalculations.getAngleOffsetDegrees();
             }
 
-            target = target.plus(FieldCalculations.getAngleOffsetDegrees().times(Constants.ShooterCons tants.OFFSET_MULT_SIDE));
+            target = target.plus(FieldCalculations.getAngleOffsetDegrees().times(Constants.ShooterConstants.OFFSET_MULT_SIDE));
         
             return alignRequest
                     .withVelocityX(-driveController.getLeftY() * 5.12) // Drive forward with negative Y (forward)

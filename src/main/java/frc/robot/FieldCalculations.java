@@ -103,9 +103,19 @@ public class FieldCalculations {
         return ballSpeed * Math.sin(AimingConstants.SHOOTER_ANGLE_RAD);
     }
 
+    public static double getBallVelocityMeters(double pointDist) {
+        return Math.sqrt((pointDist * pointDist * 9.806)/(pointDist * Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD) - 2 * 1.10875757466 * Math.pow(Math.cos(AimingConstants.SHOOTER_ANGLE_RAD), 2)));
+    }
+
     public static Rotation2d getAngleOffsetDegrees() {
-        return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)))) 
+        return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond)) 
         * (180 / Math.PI) - Subsystems.drivetrain().getRotation3d().toRotation2d().getDegrees());
     }
+
+    public static double getOffsetVelocity() {
+        double shootDist = (targetPose.getX() - Subsystems.drivetrain().getState().Pose.getX())/(Math.cos(Subsystems.drivetrain().getRotation3d().toRotation2d().getRadians()));
+        return ballSpeedToFlywheel(getBallVelocityMeters(shootDist));
+    }
+
 }
 
