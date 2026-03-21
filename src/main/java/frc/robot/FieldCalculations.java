@@ -108,12 +108,12 @@ public class FieldCalculations {
     }
 
     public static Rotation2d getAngleOffsetDegrees() {
-        return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond)) 
+        return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)))) 
         * (180 / Math.PI) - Subsystems.drivetrain().getRotation3d().toRotation2d().getDegrees());
     }
 
     public static double getOffsetVelocity() {
-        double shootDist = (targetPose.getX() - Subsystems.drivetrain().getState().Pose.getX())/(Math.cos(Subsystems.drivetrain().getRotation3d().toRotation2d().getRadians()));
+        double shootDist = (targetPose.getX() - Subsystems.drivetrain().getState().Pose.getX())/(Math.cos(Subsystems.drivetrain().getRotation3d().toRotation2d().getRadians() - getAngleOffsetDegrees().getRadians()));
         return ballSpeedToFlywheel(getBallVelocityMeters(shootDist));
     }
 
