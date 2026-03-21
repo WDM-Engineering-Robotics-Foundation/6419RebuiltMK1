@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.subsystems.Subsystems;
 
 public class Telemetry {
     private final double MaxSpeed;
@@ -104,7 +105,7 @@ public class Telemetry {
 
         targetLocation.set(FieldCalculations.getTargetPose());
         absoluteVelocity.set(FieldCalculations.getAbsoluteVelocity());
-        angleOffset.set(FieldCalculations.getAngleOffsetDegrees());
+        /* angleOffset.set(FieldCalculations.getAngleOffsetDegrees());
 
         /* Also write to log file */
         SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);

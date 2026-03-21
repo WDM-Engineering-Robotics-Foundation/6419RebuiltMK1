@@ -72,10 +72,10 @@ public class RobotCommands {
 
             if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
                 target = target.plus(Rotation2d.k180deg);
-                target = FieldCalculations.getAngleOffsetDegrees();
+                target = FieldCalculations.getAngleOffsetDegrees(target);
             }
 
-            target = target.plus(FieldCalculations.getAngleOffsetDegrees().times(Constants.ShooterConstants.OFFSET_MULT_SIDE));
+            target = target.plus(FieldCalculations.getAngleOffsetDegrees(target).times(Constants.ShooterConstants.OFFSET_MULT_SIDE));
         
             return alignRequest
                     .withVelocityX(-driveController.getLeftY() * 5.12) // Drive forward with negative Y (forward)
