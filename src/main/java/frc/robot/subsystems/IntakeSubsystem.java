@@ -1,10 +1,16 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.encoder.SplineEncoder;
@@ -32,8 +38,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.KickerConstants;
+import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 
 import static frc.robot.Constants.IntakeConstants;
@@ -60,6 +69,22 @@ public class IntakeSubsystem extends SubsystemBase {
     private final DoublePublisher intakeRotOut = intakeTable.getDoubleTopic("Intake Rotation Out").publish();
     private final BooleanPublisher outPub = intakeTable.getBooleanTopic("Is Out").publish();
     private final BooleanPublisher atTargetPub = intakeTable.getBooleanTopic("At Target").publish();
+
+    private final SysIdRoutine sysIdRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            Units.Volts.of(4),
+            Units.Seconds.of(5),
+            state -> SignalLogger.writeString("SysIdIntakeState", state.toString())
+        ), 
+        new SysIdRoutine.Mechanism(
+            (volts)->{
+                spinMotor.setControl(new VoltageOut(volts));
+            }, 
+            null, 
+            this
+        )
+    );
 
 
     IntakeSubsystem() {
@@ -92,6 +117,7 @@ public class IntakeSubsystem extends SubsystemBase {
             outConfig.Inverted = IntakeConstants.INTAKE_SPIN_REVERSED ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
             spinMotor.getConfigurator().apply(outConfig);
+            spinMotor.getConfigurator().apply(IntakeConstants.INTAKE_PID);
             
         }
         setDefaultCommand(Commands.run(()->{
@@ -116,6 +142,14 @@ public class IntakeSubsystem extends SubsystemBase {
         outPub.set(isOut);
     }
 
+    public Command sysIdDynamic(Direction dir) {
+        return sysIdRoutine.dynamic(dir);
+    }
+
+    public Command sysIdQuasistatic(Direction dir) {
+        return sysIdRoutine.quasistatic(dir);
+    }
+
     public boolean atPosition() {
         return Math.abs(posController.getSetpoint()-absEncoder.getAngle()) <= IntakeConstants.POS_TOLERANCE;
     }
@@ -124,7 +158,23 @@ public class IntakeSubsystem extends SubsystemBase {
         return Commands.run(()->{
             isOut = true;
             posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-            spinMotor.set((intake) ? IntakeConstants.INTAKE_DUTY_CYCLE : 0.0); // && atPosition()
+            spinMotor.setControl(new DutyCycleOut((intake) ? IntakeConstants.INTAKE_DUTY_CYCLE : 0.0)); // && atPosition()
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command holdOuttake() {
+        return Commands.run(()->{
+            isOut = true;
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            spinMotor.setControl(new DutyCycleOut(IntakeConstants.OUTTAKE_DUTY_CYCLE)); // && atPosition()
+        }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
+    }
+
+    public Command holdOuttakeShake() {
+        return Commands.run(()->{
+            isOut = true;
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT_SHAKE, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            spinMotor.setControl(new DutyCycleOut(IntakeConstants.OUTTAKE_DUTY_CYCLE)); // && atPosition()
         }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf);
     }
 

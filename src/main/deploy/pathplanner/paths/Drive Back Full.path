@@ -3,45 +3,43 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7137053571428571,
-        "y": 0.6287946428571434
+        "x": 7.795173025732032,
+        "y": 2.7674534161490683
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.445983509994503,
-        "y": 0.8096212128919409
+        "x": 6.153398402839397,
+        "y": 2.2926264418811
       },
       "isLocked": false,
-      "linkedName": "OutpostIntake"
+      "linkedName": "End Scoop"
     },
     {
       "anchor": {
-        "x": 2.0579166666666664,
-        "y": 1.8947023809523817
+        "x": 2.9744720496894406,
+        "y": 2.5743034605146398
       },
       "prevControl": {
-        "x": 1.6272470238095238,
-        "y": 1.5684375
+        "x": 3.4895385980479148,
+        "y": 2.3409139307897067
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [
+  "rotationTargets": [
     {
-      "fieldPosition": {
-        "x": 4.62,
-        "y": 4.04
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.05610236220472437,
-      "maxWaypointRelativePos": 1.0,
-      "name": "Point Towards Zone"
+      "waypointRelativePos": 0.27176470588235296,
+      "rotationDegrees": 130.11925576913532
+    },
+    {
+      "waypointRelativePos": 0.5705882352941185,
+      "rotationDegrees": 89.9464566906365
     }
   ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
@@ -53,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 37.82275414914501
+    "rotation": 37.05159612610825
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Iowa",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -114.96278983080705
   },
   "useDefaultConstraints": true
 }

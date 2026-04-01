@@ -3,45 +3,48 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7137053571428571,
-        "y": 0.6287946428571434
+        "x": 6.586473214285714,
+        "y": 1.97953125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.445983509994503,
-        "y": 0.8096212128919409
+        "x": 7.536127162823237,
+        "y": 1.4644647016413184
       },
       "isLocked": false,
-      "linkedName": "OutpostIntake"
+      "linkedName": "PostBumpRight"
     },
     {
       "anchor": {
-        "x": 2.0579166666666664,
-        "y": 1.8947023809523817
+        "x": 7.800178571428571,
+        "y": 3.532552083333334
       },
       "prevControl": {
-        "x": 1.6272470238095238,
-        "y": 1.5684375
+        "x": 8.057711845607809,
+        "y": 2.9128626423395456
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ScoopRightEnd"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [
+  "constraintZones": [
     {
-      "fieldPosition": {
-        "x": 4.62,
-        "y": 4.04
-      },
-      "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.05610236220472437,
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.1387283236994216,
       "maxWaypointRelativePos": 1.0,
-      "name": "Point Towards Zone"
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 720.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
     }
   ],
+  "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
@@ -53,13 +56,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 37.82275414914501
+    "rotation": 90.48554583000806
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 13.66607925610282
   },
   "useDefaultConstraints": true
 }

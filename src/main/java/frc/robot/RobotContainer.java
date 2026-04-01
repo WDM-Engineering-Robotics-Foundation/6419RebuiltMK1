@@ -74,7 +74,32 @@ public class RobotContainer {
         NamedCommands.registerCommand("BumpForwards", Subsystems.drivetrain().applyRequest(()->drive.withVelocityX(MaxSpeed*0.5)));
         NamedCommands.registerCommand("BumpBackwards", Subsystems.drivetrain().applyRequest(()->drive.withVelocityX(-MaxSpeed*0.5)));
         NamedCommands.registerCommand("Run Intake", RobotCommands.intakeBalls());
-        final boolean showTestAutos = false;
+        NamedCommands.registerCommand("Hold Intake Out", RobotCommands.holdIntakeOut());
+        NamedCommands.registerCommand("Shoot And Align", Commands.parallel(
+            RobotCommands.alignToHub(null),
+            RobotCommands.fireShooter()
+        ));
+        NamedCommands.registerCommand("Wiggle Intake", Commands.sequence(
+                Commands.deadline(
+                    Commands.waitSeconds(0.4),
+                    RobotCommands.holdIntakeIn()
+                ),
+                Commands.deadline(
+                    Commands.waitSeconds(0.4),
+                    RobotCommands.holdIntakeOut()
+                )
+            ).repeatedly());
+        NamedCommands.registerCommand("Wiggle Intake Full", Commands.sequence(
+                Commands.deadline(
+                    Commands.waitSeconds(0.4),
+                    RobotCommands.holdIntakeFeed()
+                ),
+                Commands.deadline(
+                    Commands.waitSeconds(0.4),
+                    RobotCommands.holdIntakeOut()
+                )
+            ).repeatedly());
+        final boolean showTestAutos = true;
         Subsystems.drivetrain().configurePathPlanner();
         SmartDashboard.putData("Auto Chooser",autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
             opt -> opt.filter((auto)->(auto.getName().startsWith("Test-")&&showTestAutos)||auto.getName().startsWith("Comp-"))
@@ -108,6 +133,8 @@ public class RobotContainer {
         );
 
         joystick.povDown().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
+
+        joystick.square().whileTrue(RobotCommands.outtakeShake());
         // joystick.circle().whileTrue(Subsystems.drivetrain().applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
@@ -130,14 +157,22 @@ public class RobotContainer {
         //     return Subsystems.intake().setOut(true);
         // }, Set.of(Subsystems.intake())));
 
+        // joystick.cross().onTrue(
+        //     RobotCommands.alignToFuel(joystick)
+        //         .onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate())
+        // );
+
+
         joystick.R1().whileTrue(Subsystems.intake().setOut(true));
         joystick.R2().whileTrue(Commands.sequence(
                 Commands.deadline(
-                    Commands.waitSeconds(0.1).andThen(Commands.waitUntil(Subsystems.intake()::atPosition)),
+                    Commands.waitSeconds(0.4),
                     RobotCommands.holdIntakeFeed()
                 ),
-                Commands.waitSeconds(0.1),
-                Commands.waitUntil(Subsystems.intake()::atPosition)
+                Commands.deadline(
+                    Commands.waitSeconds(0.4),
+                    RobotCommands.holdIntakeOut()
+                )
             ).repeatedly().handleInterrupt(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeIn()))
         );
 
@@ -147,16 +182,17 @@ public class RobotContainer {
         ));
         joystick.L2().whileTrue(RobotCommands.fireShooterSetSpeed(45));
 
-        joystick.PS().onTrue(Commands.runOnce(()->Subsystems.drivetrain().seedFieldCentric()));
+        
+        //joystick.PS().onTrue(Commands.runOnce(()->Subsystems.drivetrain().seedFieldCentric()));
 
-        // joystick.R1().whileTrue(Subsystems.shooter().sysIdDynamic(Direction.kReverse));
-        // joystick.L1().whileTrue(Subsystems.shooter().sysIdQuasistatic(Direction.kReverse));
+        // joystick.R1().whileTrue(Subsystems.intake().sysIdDynamic(Direction.kReverse));
+        // joystick.L1().whileTrue(Subsystems.intake().sysIdQuasistatic(Direction.kReverse));
 
-        // joystick.R2().whileTrue(Subsystems.shooter().sysIdDynamic(Direction.kForward));
-        // joystick.L2().whileTrue(Subsystems.shooter().sysIdQuasistatic(Direction.kForward));
+        // joystick.R2().whileTrue(Subsystems.intake().sysIdDynamic(Direction.kForward));
+        // joystick.L2().whileTrue(Subsystems.intake().sysIdQuasistatic(Direction.kForward));
 
 
-        joystick.circle().onTrue(RobotCommands.alignToHub(joystick).onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate()));
+        //joystick.circle().onTrue(RobotCommands.alignToHub(joystick).onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate()));
 
         Subsystems.drivetrain().registerTelemetry(logger::telemeterize);
     }

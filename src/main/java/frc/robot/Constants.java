@@ -23,7 +23,7 @@ public class Constants {
         public static final double BASE_VELOCITY = 40;
         public static final double VELO_FF = 4.6;
 
-        public static final double VELO_TOLERANCE = 4;
+        public static final double VELO_TOLERANCE = 2;
 
         public static final double VELO_MAX = 75;
 
@@ -58,24 +58,34 @@ public class Constants {
         public static final int INTAKE_POS_MOTOR_ID = 19;
         public static final int INTAKE_SPIN_MOTOR_ID = 20;
 
+        public static final Slot0Configs INTAKE_PID = new Slot0Configs()
+            .withKS(0.42751)
+            .withKV(0.12769)
+            .withKA(0.0064366)
+            .withKP(0.033179);
+
         public static final int INTAKE_ABS_ENCODER_ID = 21;
 
         public static final boolean INTAKE_POS_REVERSED = false;
-        public static final boolean INTAKE_SPIN_REVERSED = false;
+        public static final boolean INTAKE_SPIN_REVERSED = true;
 
-        public static final double INTAKE_POS_HOME = 0.18;
+        public static final double INTAKE_POS_HOME = 0.173; //0.18
 
         public static final double INTAKE_POS_INSIDE = 0;
 
-        public static final double INTAKE_POS_FEED = 0.04;
+        public static final double INTAKE_POS_FEED = 0.06; //0.04
         // 136
-        public static final double INTAKE_POS_OUT = 0.33;
+        public static final double INTAKE_POS_OUT = 0.39; //0.33 0.385
 
         public static final double INTAKE_POS_DEPOT = 0.28;
 
+        public static final double INTAKE_POS_OUT_SHAKE = 0.35;
+
         public static final double POSITION_CONVERSION = 1.0/20.0 * 24.0/56.0;
 
-        public static final double INTAKE_DUTY_CYCLE = 0.6;
+        public static final double INTAKE_DUTY_CYCLE = 0.9;
+
+        public static final double OUTTAKE_DUTY_CYCLE = -1.0;
 
         public static final double POS_TOLERANCE = 0.02;
 
@@ -85,7 +95,7 @@ public class Constants {
     }
 
     public static final class VisionConstants {
-        public static final String FRONT_ELEMENT_CAMERA_NAME = "Front Element Camera";
+        public static final String FRONT_ELEMENT_CAMERA_NAME = "Front Ball Camera";
 
         public static final String FRONT_LOCALIZATION_CAMERA_NAME = "Front Local Camera";
         public static final Transform3d FRONT_LOCALIZATION_CAMERA_OFFSET = new Transform3d(
@@ -98,6 +108,12 @@ public class Constants {
                 Units.Degrees.of(0)
             )
         );
+
+        public static final double ELEMENT_CAMERA_FOV = 60.5;
+
+        public static final int ELEMENT_SLIT_COUNT = 5;
+
+        public static final double ELEMENT_SLIT_WIDTH = (double) ELEMENT_CAMERA_FOV/ELEMENT_SLIT_COUNT;
     }
 
     public static final class AimingConstants {

@@ -1,7 +1,10 @@
 package frc.robot;
 
 import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.subsystems.Subsystems;
 
 public class Telemetry {
     private final double MaxSpeed;
@@ -31,7 +35,10 @@ public class Telemetry {
      */
     public Telemetry(double maxSpeed) {
         MaxSpeed = maxSpeed;
+
+        SignalLogger.setPath("/media/sda1/");
         SignalLogger.start();
+        
 
         /* Set up the module state Mechanism2d telemetry */
         for (int i = 0; i < 4; ++i) {
@@ -53,11 +60,18 @@ public class Telemetry {
     private final DoublePublisher driveOdometryFrequency = driveStateTable.getDoubleTopic("OdometryFrequency").publish();
 
     private final StructPublisher<Translation2d> targetLocation = driveStateTable.getStructTopic("Hub Translation", Translation2d.struct).publish();
+    private final StructArrayPublisher<Pose2d> visionEstimate = driveStateTable.getStructArrayTopic("Vision Estimates", Pose2d.struct).publish();
+    private final int NUM_POSES_SAVED = 5;
+    private final Pose2d[] estimates = new Pose2d[NUM_POSES_SAVED];
+    private int poseEstimateIndex = 0;
 
     /* Robot pose for field positioning */
     private final NetworkTable table = inst.getTable("Pose");
     private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
+
+    
+    
 
     /* Mechanisms to represent the swerve module states */
     private final Mechanism2d[] m_moduleMechanisms = new Mechanism2d[] {
@@ -98,7 +112,16 @@ public class Telemetry {
         driveTimestamp.set(state.Timestamp);
         driveOdometryFrequency.set(1.0 / state.OdometryPeriod);
 
+        estimates[poseEstimateIndex] = Subsystems.vision().getLatestPoseEstimate();
+        poseEstimateIndex = (poseEstimateIndex + 1) % NUM_POSES_SAVED;
         targetLocation.set(FieldCalculations.getTargetPose());
+        visionEstimate.set(estimates);
+        
+        TalonFX frontLeftDrive = Subsystems.drivetrain().getModule(0).getDriveMotor();
+
+        SignalLogger.writeDouble("Front Left Drive Pos", frontLeftDrive.getPosition(true).getValueAsDouble());
+        SignalLogger.writeDouble("Front Left Drive Velo", frontLeftDrive.getVelocity(true).getValueAsDouble());
+        SignalLogger.writeDouble("Front Left Drive Voltage", frontLeftDrive.getMotorVoltage(true).getValueAsDouble());
 
         /* Also write to log file */
         SignalLogger.writeStruct("DriveState/Pose", Pose2d.struct, state.Pose);

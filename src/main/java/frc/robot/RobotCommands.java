@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -48,6 +49,23 @@ public class RobotCommands {
         return Subsystems.intake().setOut(true).asProxy();
     }
 
+    public static Command outtakeBalls() {
+        return Subsystems.intake().holdOuttake().asProxy();
+    }
+
+    public static Command outtakeShake() {
+        return Commands.sequence(
+            Commands.deadline(
+                Commands.waitSeconds(0.25),
+                outtakeBalls()
+            ),
+            Commands.deadline(
+                Commands.waitSeconds(0.25), 
+                Subsystems.intake().holdOuttakeShake().asProxy()
+            )
+        ).repeatedly().handleInterrupt(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeIn()));
+    }
+
     public static Command holdIntakeIn() {
         return Subsystems.intake().setIn().asProxy();
     }
@@ -74,13 +92,36 @@ public class RobotCommands {
                 target = target.plus(Rotation2d.k180deg);
             }
 
-            
+            double veloX = 0;
+            double veloY = 0;
+            if (driveController != null) {
+                veloX = -driveController.getLeftY() * 5.12;
+                veloY = -driveController.getLeftX() * 5.12;
+            }
         
             return alignRequest
-                    .withVelocityX(-driveController.getLeftY() * 5.12) // Drive forward with negative Y (forward)
-                    .withVelocityY(-driveController.getLeftX() * 5.12) // Drive left with negative X (left)
+                    .withVelocityX(veloX) // Drive forward with negative Y (forward)
+                    .withVelocityY(veloY) // Drive left with negative X (left)
                     .withTargetDirection(target.minus(new Rotation2d(Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond*Constants.AimingConstants.VELO_MULT)));
                     
         });
     }
+
+    // public static Command alignToFuel(CommandPS5Controller driveController) {
+    //     return Subsystems.drivetrain().applyRequest(()->{
+    //         Rotation2d targetRotation = Subsystems.drivetrain().getRotation3d().toRotation2d();
+            
+    //         double veloX = 0;
+    //         double veloY = 0;
+    //         if (driveController != null) {
+    //             veloX = -driveController.getLeftY() * 5.12;
+    //             veloY = -driveController.getLeftX() * 5.12;
+    //         }
+        
+    //         return alignRequest
+    //                 .withVelocityX(veloX) // Drive forward with negative Y (forward)
+    //                 .withVelocityY(veloY) // Drive left with negative X (left)
+    //                 .withTargetDirection(targetRotation.plus(Subsystems.vision().getTargetBallYaw()));
+    //     });
+    // }
 }
