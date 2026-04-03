@@ -146,7 +146,7 @@ public class Constants {
 
         public static final double ANGLE_COS_CONST = 2 * HUB_HEIGHT.minus(SHOOTER_HEIGHT).in(Units.Meters) * Math.cos(SHOOTER_ANGLE_RAD)*Math.cos(SHOOTER_ANGLE_RAD);
 
-        
+        public static final double ANGLE_OFFSET_CONST = 1.0;
 
         
     }

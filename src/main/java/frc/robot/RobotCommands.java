@@ -88,7 +88,7 @@ public class RobotCommands {
 
             Rotation2d target = robotDiff.getAngle();
 
-            target = FieldCalculations.getAngleOffsetDegrees();
+            //target = FieldCalculations.getAngleOffsetDegrees();
 
             if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
                 target = target.plus(Rotation2d.k180deg);
@@ -104,7 +104,7 @@ public class RobotCommands {
             return alignRequest
                     .withVelocityX(veloX) // Drive forward with negative Y (forward)
                     .withVelocityY(veloY) // Drive left with negative X (left)
-                    .withTargetDirection(target.minus(new Rotation2d(Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond*Constants.AimingConstants.VELO_MULT)));
+                    .withTargetDirection(target);
                     
         });
     }

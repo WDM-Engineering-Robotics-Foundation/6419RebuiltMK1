@@ -86,7 +86,8 @@ public class FieldCalculations {
     }
 
     public static double ballSpeedToFlywheel(double ballSpeed) {
-        double totalSpeed = Subsystems.drivetrain().getChassisSpeeds().vxMetersPerSecond + ballSpeed;
+        if (ballSpeed == 0.0) return 0.0;
+        double totalSpeed =  ballSpeed;
         double mpsInverse = (totalSpeed * totalSpeed * Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD) + totalSpeed * Math.sqrt(totalSpeed * totalSpeed * Math.pow(Math.sin(2 * AimingConstants.SHOOTER_ANGLE_RAD), 2) - 78.448 * (AimingConstants.HUB_HEIGHT.in(Units.Meters) - AimingConstants.SHOOTER_HEIGHT.in(Units.Meters)) * Math.pow(Math.cos(AimingConstants.SHOOTER_ANGLE_RAD), 2)))/(19.612);
         return AimingConstants.VELO_DIST_A * (mpsInverse * mpsInverse) + AimingConstants.VELO_DIST_B * mpsInverse + AimingConstants.VELO_DIST_C;
     }
@@ -109,8 +110,10 @@ public class FieldCalculations {
     }
 
     public static Rotation2d getAngleOffsetDegrees() {
-        return Rotation2d.fromDegrees(Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)))) 
-        * (180 / Math.PI) - Subsystems.drivetrain().getRotation3d().toRotation2d().getDegrees());
+        return Rotation2d.fromDegrees(
+            Math.atan((ballSpeedVelocityY(flywheelToBallSpeed(targetVelo)) + Subsystems.drivetrain().getChassisSpeeds().vyMetersPerSecond)/(ballSpeedVelocityX(flywheelToBallSpeed(targetVelo)))) 
+            * (180 / Math.PI) - Subsystems.drivetrain().getRotation3d().toRotation2d().getDegrees()
+        );
     }
 
     public static double getOffsetVelocity() {
@@ -120,13 +123,12 @@ public class FieldCalculations {
 
     public static double getOffsetShootingDist() {
         double hubDist;
-        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
-            hubDist = AimingConstants.BLUE_BASE_HUB_LOC.getX() - Subsystems.drivetrain().getState().Pose.getX();
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) {
+            hubDist = AimingConstants.RED_BASE_HUB_LOC.getX() - Subsystems.drivetrain().getState().Pose.getX();
         } else {
             hubDist = AimingConstants.BLUE_BASE_HUB_LOC.getX() - Subsystems.drivetrain().getState().Pose.getX();
-            hubDist = -hubDist;
         }
         
-        return hubDist / Math.cos(getAngleOffsetDegrees().getRadians());
+        return hubDist / Math.cos(Subsystems.drivetrain().getRotation3d().toRotation2d().getRadians());
     }
 }
