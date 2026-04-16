@@ -29,6 +29,11 @@ public class Constants {
 
         public static final double BASE_DIST_METERS = 2.54;
 
+        public static final Translation2d SHOOTER_POS_OFFSET = new Translation2d(
+            Units.Inches.of(-6.80497),
+            Units.Inches.of(-5.5)
+        );
+
         public static final Slot0Configs SHOOTER_PID = new Slot0Configs()
             .withKP(0.12205)
             .withKA(0.0073638)
@@ -127,6 +132,26 @@ public class Constants {
             Units.Meters.of(4.025)
         );
 
+        public static final Translation2d BLUE_BASE_NORTH_PASS_LOC = new Translation2d(
+            Units.Meters.of(BLUE_BASE_HUB_LOC.getX()),
+            Units.Meters.of(5.875)
+        );
+
+        public static final Translation2d BLUE_BASE_SOUTH_PASS_LOC = new Translation2d(
+            Units.Meters.of(BLUE_BASE_HUB_LOC.getX()),
+            Units.Meters.of(2.125)
+        );
+
+        public static final Translation2d RED_BASE_NORTH_PASS_LOC = new Translation2d(
+            Units.Meters.of(RED_BASE_HUB_LOC.getX()),
+            Units.Meters.of(5.875)
+        );
+
+        public static final Translation2d RED_BASE_SOUTH_PASS_LOC = new Translation2d(
+            Units.Meters.of(RED_BASE_HUB_LOC.getX()),
+            Units.Meters.of(2.125)
+        );
+
         // public static final Translation2d SHOOTER_OFFSET = new Translation2d(
         //     Units.Inches.of(9.0),
         //     Units.Inches.of(5.0)
@@ -134,9 +159,12 @@ public class Constants {
 
         public static final double VELO_MULT = 0.1;
 
-        public static final double VELO_DIST_A = 0.402129;
-        public static final double VELO_DIST_B = 2.51619;
-        public static final double VELO_DIST_C = 34.85438;
+        public static final double VELO_DIST_A = -0.0342128;
+        public static final double VELO_DIST_B = 5.98131;
+        public static final double VELO_DIST_C = 27.67675;
+
+        public static final double TOF_A = 0.17421;
+        public static final double TOF_B = 0.419117;
 
         public static final double SHOOTER_ANGLE_RAD = Units.Degrees.of(54).in(Units.Radians);
 

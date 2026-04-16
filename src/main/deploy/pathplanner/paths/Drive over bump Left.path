@@ -3,29 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.771215616681455,
-        "y": 5.873948535936113
+        "x": 3.5978869047619044,
+        "y": 6.025215773809524
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.526597909917588,
-        "y": 5.925544829771879
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.1112866015971603,
-        "y": 5.873948535936113
-      },
-      "prevControl": {
-        "x": 3.157907226305668,
-        "y": 6.119563106659815
-      },
-      "nextControl": {
-        "x": 3.0276267717223027,
-        "y": 5.433197831070902
+        "x": 3.3532691979980376,
+        "y": 6.076812067645291
       },
       "isLocked": false,
       "linkedName": null
@@ -78,23 +62,23 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.8658823529411765,
+      "waypointRelativePos": 0.95,
       "rotationDegrees": -89.47133795779249
     },
     {
-      "waypointRelativePos": 2.1697612732095544,
+      "waypointRelativePos": 1.1697612732095544,
       "rotationDegrees": -19.438667580342475
     },
     {
-      "waypointRelativePos": 3.171171171171171,
+      "waypointRelativePos": 2.171171171171171,
       "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.4966442953020136,
-      "maxWaypointRelativePos": 2.0,
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.3,
         "maxAcceleration": 4.0,
@@ -106,8 +90,8 @@
     },
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 3.150684931506864,
-      "maxWaypointRelativePos": 4.0,
+      "minWaypointRelativePos": 2.150684931506864,
+      "maxWaypointRelativePos": 3.0,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 4.0,
@@ -122,7 +106,7 @@
   "eventMarkers": [
     {
       "name": "Run Intake",
-      "waypointRelativePos": 2.0821917808219172,
+      "waypointRelativePos": 1.0821917808219172,
       "endWaypointRelativePos": 4.0,
       "command": {
         "type": "named",
@@ -148,7 +132,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -61.99082329198614
+    "rotation": -90.91665425638527
   },
   "useDefaultConstraints": true
 }

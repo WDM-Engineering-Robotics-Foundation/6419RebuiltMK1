@@ -78,12 +78,12 @@ public class RobotCommands {
         return Subsystems.intake().setFeed().asProxy();
     }
     private static final SwerveRequest.FieldCentricFacingAngle alignRequest = new SwerveRequest.FieldCentricFacingAngle()
-        .withHeadingPID(8,0,0)
+        .withHeadingPID(9,0,0)
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
         .withDeadband(5.12 * 0.1);
     public static Command alignToHub(CommandPS5Controller driveController) {
         return Subsystems.drivetrain().applyRequest(()->{
-            Translation2d robotLoc = Subsystems.drivetrain().getState().Pose.getTranslation();
+            Translation2d robotLoc = FieldCalculations.getTurretPose();
             Translation2d robotDiff = FieldCalculations.getTargetPose().minus(robotLoc);
 
             Rotation2d target = robotDiff.getAngle();

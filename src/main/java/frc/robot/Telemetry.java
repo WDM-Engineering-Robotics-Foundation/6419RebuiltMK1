@@ -70,7 +70,7 @@ public class Telemetry {
     private final DoubleArrayPublisher fieldPub = table.getDoubleArrayTopic("robotPose").publish();
     private final StringPublisher fieldTypePub = table.getStringTopic(".type").publish();
 
-    
+    private final StructPublisher<Translation2d> turretPose = driveStateTable.getStructTopic("Turret Pose", Translation2d.struct).publish();
     
 
     /* Mechanisms to represent the swerve module states */
@@ -116,6 +116,7 @@ public class Telemetry {
         poseEstimateIndex = (poseEstimateIndex + 1) % NUM_POSES_SAVED;
         targetLocation.set(FieldCalculations.getTargetPose());
         visionEstimate.set(estimates);
+        turretPose.set(FieldCalculations.getTurretPose());
         
         TalonFX frontLeftDrive = Subsystems.drivetrain().getModule(0).getDriveMotor();
 

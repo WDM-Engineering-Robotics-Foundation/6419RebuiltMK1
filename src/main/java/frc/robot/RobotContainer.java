@@ -41,8 +41,8 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.Subsystems;
 
 public class RobotContainer {
-    private double MaxSpeed = 1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxSpeed = 1;//1.0 * TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.2).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -131,10 +131,12 @@ public class RobotContainer {
         RobotModeTriggers.disabled().whileTrue(
             Subsystems.drivetrain().applyRequest(() -> idle).ignoringDisable(true)
         );
+        // TODO
+        // joystick.povDown().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
 
-        joystick.povDown().whileTrue(Subsystems.drivetrain().applyRequest(() -> brake));
+        // joystick.square().whileTrue(RobotCommands.outtakeShake());
 
-        joystick.square().whileTrue(RobotCommands.outtakeShake());
+
         // joystick.circle().whileTrue(Subsystems.drivetrain().applyRequest(() ->
         //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         // ));
@@ -162,25 +164,25 @@ public class RobotContainer {
         //         .onlyWhile(joystick.axisMagnitudeGreaterThan(PS5Controller.Axis.kRightX.value, 0.1).negate())
         // );
 
+        // TODO
+        // joystick.R1().whileTrue(Subsystems.intake().setOut(true));
+        // joystick.R2().whileTrue(Commands.sequence(
+        //         Commands.deadline(
+        //             Commands.waitSeconds(0.4),
+        //             RobotCommands.holdIntakeFeed()
+        //         ),
+        //         Commands.deadline(
+        //             Commands.waitSeconds(0.4),
+        //             RobotCommands.holdIntakeOut()
+        //         )
+        //     ).repeatedly().handleInterrupt(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeIn()))
+        // );
 
-        joystick.R1().whileTrue(Subsystems.intake().setOut(true));
-        joystick.R2().whileTrue(Commands.sequence(
-                Commands.deadline(
-                    Commands.waitSeconds(0.4),
-                    RobotCommands.holdIntakeFeed()
-                ),
-                Commands.deadline(
-                    Commands.waitSeconds(0.4),
-                    RobotCommands.holdIntakeOut()
-                )
-            ).repeatedly().handleInterrupt(()->CommandScheduler.getInstance().schedule(RobotCommands.holdIntakeIn()))
-        );
-
-        joystick.L1().whileTrue(Commands.parallel(
-            RobotCommands.alignToHub(joystick),
-            RobotCommands.fireShooter()
-        ));
-        joystick.L2().whileTrue(RobotCommands.fireShooterSetSpeed(45));
+        // joystick.L1().whileTrue(Commands.parallel(
+        //     RobotCommands.alignToHub(joystick),
+        //     RobotCommands.fireShooter()
+        // ));
+        // joystick.L2().whileTrue(RobotCommands.fireShooterSetSpeed(45));
 
         
         //joystick.PS().onTrue(Commands.runOnce(()->Subsystems.drivetrain().seedFieldCentric()));
