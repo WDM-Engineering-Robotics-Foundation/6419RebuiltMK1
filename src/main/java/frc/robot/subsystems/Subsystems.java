@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.generated.TunerConstants;
+import frc.robot.vision.OrinSubsystem;
 
 public class Subsystems {
 
@@ -17,6 +18,8 @@ public class Subsystems {
 
     private static VisionSubsystem vision;
 
+    private static OrinSubsystem orin;
+
     public static void init() {
         drivetrain = TunerConstants.createDrivetrain();
         shooter = new ShooterSubsystem();
@@ -24,6 +27,8 @@ public class Subsystems {
         kicker = new KickerSubsystem();
         intake = new IntakeSubsystem();
         vision = new VisionSubsystem();
+
+        orin = new OrinSubsystem();
         
     }
 
@@ -54,6 +59,11 @@ public class Subsystems {
     public static VisionSubsystem vision() {
         throwIfNull("Vision", vision);
         return vision;
+    }
+
+    public static OrinSubsystem orin() {
+        throwIfNull("Orin", orin);
+        return orin;
     }
 
     private static void throwIfNull(String name, Object obj) {

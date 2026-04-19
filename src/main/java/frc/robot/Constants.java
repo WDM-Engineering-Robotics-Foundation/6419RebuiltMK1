@@ -25,7 +25,7 @@ public class Constants {
 
         public static final double VELO_TOLERANCE = 2;
 
-        public static final double VELO_MAX = 75;
+        public static final double VELO_MAX = 90;
 
         public static final double BASE_DIST_METERS = 2.54;
 
@@ -132,23 +132,25 @@ public class Constants {
             Units.Meters.of(4.025)
         );
 
+        private static final double PASS_OFFSET = 3.756;
+
         public static final Translation2d BLUE_BASE_NORTH_PASS_LOC = new Translation2d(
-            Units.Meters.of(BLUE_BASE_HUB_LOC.getX()),
+            Units.Meters.of(BLUE_BASE_HUB_LOC.getX()-PASS_OFFSET),
             Units.Meters.of(5.875)
         );
 
         public static final Translation2d BLUE_BASE_SOUTH_PASS_LOC = new Translation2d(
-            Units.Meters.of(BLUE_BASE_HUB_LOC.getX()),
+            Units.Meters.of(BLUE_BASE_HUB_LOC.getX()-PASS_OFFSET),
             Units.Meters.of(2.125)
         );
 
         public static final Translation2d RED_BASE_NORTH_PASS_LOC = new Translation2d(
-            Units.Meters.of(RED_BASE_HUB_LOC.getX()),
+            Units.Meters.of(RED_BASE_HUB_LOC.getX()+PASS_OFFSET),
             Units.Meters.of(5.875)
         );
 
         public static final Translation2d RED_BASE_SOUTH_PASS_LOC = new Translation2d(
-            Units.Meters.of(RED_BASE_HUB_LOC.getX()),
+            Units.Meters.of(RED_BASE_HUB_LOC.getX()+PASS_OFFSET),
             Units.Meters.of(2.125)
         );
 

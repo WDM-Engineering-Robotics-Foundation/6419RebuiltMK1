@@ -65,7 +65,7 @@ public class FieldCalculations {
 
         Translation2d dist = turretPose.minus(targetPose);
 
-        System.out.println(dist.getNorm());
+        //System.out.println(dist.getNorm());
 
         double distNorm = dist.getNorm();
 

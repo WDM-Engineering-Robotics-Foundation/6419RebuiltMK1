@@ -122,7 +122,7 @@ public class IntakeSubsystem extends SubsystemBase {
         }
         setDefaultCommand(Commands.run(()->{
             isOut = false;
-            posController.setSetpoint(IntakeConstants.INTAKE_POS_OUT, ControlType.kPosition); //HOME
+            posController.setSetpoint(IntakeConstants.INTAKE_POS_HOME, ControlType.kPosition); //HOME
             spinMotor.set(0.0);
         }, this).withInterruptBehavior(InterruptionBehavior.kCancelSelf));
         
